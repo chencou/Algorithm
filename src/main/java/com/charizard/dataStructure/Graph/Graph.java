@@ -71,8 +71,11 @@ public class Graph {
     //狄克斯特拉 算法最短路径
 
     public void dijkstra(int start) {
+        // dist[i] 存储从源点到顶点 i 的最短距离
         int[] dist = new int[vertices];
+        // prev[i] 存储最短路径上顶点 i 的前一个顶点，用于路径恢复
         int[] pre = new int[vertices];
+        // 标记顶点是否已确定最短路径
         boolean[] visited = new boolean[vertices];
 
         Arrays.fill(dist, Integer.MAX_VALUE);
@@ -82,6 +85,7 @@ public class Graph {
         PriorityQueue<int[]> queue = new PriorityQueue<>(Comparator.comparing(o -> o[0]));
         queue.add(new int[]{0, start});
         while (!queue.isEmpty()) {
+            //获取当前顶点
             int[] current = queue.poll();
             int currentVertex = current[1];
             if (visited[currentVertex]) continue;
