@@ -63,6 +63,7 @@ public class ListGraph {
         }
     }
 
+    //狄克斯特拉 算法最短路径
     public void dijkstra(int start) {
         int[] dist = new int[vertices];
         int[] pre = new int[vertices];
