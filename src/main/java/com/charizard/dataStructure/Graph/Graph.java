@@ -140,7 +140,7 @@ public class Graph {
         //0->1=5,
         //0->2=4,
         //1->3=2,
-        //3->3=4,
+        //2->3=4,
         //2->1=1,
         Graph graph1 = new Graph(4);
         graph1.addEdge(0, 1, 5);
