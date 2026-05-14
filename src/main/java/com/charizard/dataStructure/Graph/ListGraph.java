@@ -25,8 +25,8 @@ public class ListGraph {
     }
 
     public void addEdge(int src, int dest) {
-        this.adjList.get(src).set(dest, 0);
-        this.adjList.get(dest).set(src, 0);
+        this.adjList.get(src).set(dest, 1);
+        this.adjList.get(dest).set(src, 1);
     }
 
     public void addEdge(int src, int dest, int weight) {
