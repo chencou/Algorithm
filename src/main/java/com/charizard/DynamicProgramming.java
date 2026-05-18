@@ -97,27 +97,27 @@ public class DynamicProgramming {
         if (itemList == null || itemList.isEmpty()) {
             return 0;
         }
-        int[][] dp = new int[itemList.size()][backpack];
+        int n = itemList.size();
+        int[][] dp = new int[n][backpack + 1];
 
-        for (int i = 0; i < itemList.size(); i++) {
-            for (int j = 0; j < backpack; j++) {
-                if (i <= 0) {
-                    dp[i][j] = itemList.get(i).getPrice();
-                    continue;
-                }
-                if (itemList.get(i).getWeight() > j) {
-                    dp[i][j] = dp[i - 1][j];
+        for (int i = 0; i < n; i++) {
+            int itemWeight = itemList.get(i).getWeight();
+            for (int j = 0; j <= backpack; j++) {
+                if (i == 0) {
+                    dp[i][j] = (itemWeight <= j) ? itemList.get(i).getPrice() : 0;
                 } else {
-                    if ((j + 1) + itemList.get(i).getWeight() >= backpack) {
-                        dp[i][j] = dp[i][j - 1];
+                    if (itemWeight > j) {
+                        dp[i][j] = dp[i - 1][j];
                     } else {
-                        dp[i][j] = Math.max(dp[i - 1][j], itemList.get(i).getPrice() + dp[i - 1][j - itemList.get(i).getWeight()]);
+                        dp[i][j] = Math.max(
+                                dp[i - 1][j],
+                                itemList.get(i).getPrice() + dp[i - 1][j - itemWeight]
+                        );
                     }
                 }
             }
         }
-
-        return dp[itemList.size() - 1][backpack - 1];
+        return dp[n - 1][backpack];
     }
 
 
