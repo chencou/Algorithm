@@ -82,7 +82,7 @@ public class DynamicProgramming {
             }
         }
 
-        return dp[word1.length() - 1][word2.length()];
+        return dp[word1.length() - 1][word2.length() -1];
     }
 
     /**
