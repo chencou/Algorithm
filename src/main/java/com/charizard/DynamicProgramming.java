@@ -67,24 +67,22 @@ public class DynamicProgramming {
      */
     private static int getDPSameWord(String word1, String word2) {
 
-        int[][] dp = new int[word1.length()][word2.length()];
+        int[][] dp = new int[word1.length()][word2.length() + 1];
 
         //List<Character> flagList = new ArrayList<>();
 
-        int flagCount = 0;
         for (int i = 0; i < word1.length(); i++) {
             for (int j = 0; j < word2.length(); j++) {
                 //if (flagList.contains(word1.charAt(i))) continue;
                 if (word1.charAt(i) == word2.charAt(j)) {
                     dp[i][j] = i <= 0 || j <= 0 ? 1 : dp[i - 1][j - 1] + 1;
-                    flagCount = dp[i][j];
                 } else {
-                    dp[i][j] = 0;
+                    dp[i][j] =  i <= 0 || j <= 0 ? 0 : Math.max(dp[i - 1][j], dp[i][j - 1]);
                 }
             }
         }
 
-        return flagCount;
+        return dp[word1.length() - 1][word2.length()];
     }
 
     /**
