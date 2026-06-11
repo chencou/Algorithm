@@ -1,5 +1,5 @@
 
-package com.charizard.dataStructure.Graph;
+package com.charizard.dataStructure.graph;
 
 import java.util.*;
 

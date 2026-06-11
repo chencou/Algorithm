@@ -1,110 +1,101 @@
-package com.charizard.dataStructure.Graph;
+package com.charizard.dataStructure.graph;
 
 import java.util.*;
 
 /**
- *  图
- *  <p>领接矩阵图</p>
+ * 链表图
+ *
  */
-public class Graph {
+public class ListGraph {
 
     private int vertices;
 
-    private int[][] matrix;
+    private List<List<Integer>> adjList;
 
-    public Graph(int vertices) {
+    public ListGraph(int vertices) {
         this.vertices = vertices;
-        this.matrix = new int[vertices][vertices];
+        this.adjList = new ArrayList<>(vertices);
+        for (int i = 0; i < vertices; i++) {
+            List<Integer> list = new ArrayList<>(vertices);
+            for (int j = 0; j < vertices; j++) {
+                list.add(0);
+            }
+            this.adjList.add(i, list);
+        }
     }
 
-    /**
-     * 添加边
-     * @param start
-     * @param end
-     */
-    public void addEdge(int start, int end) {
-        matrix[start][end] = 1;
-        matrix[end][start] = 1;
+    public void addEdge(int src, int dest) {
+        this.adjList.get(src).set(dest, 1);
+        this.adjList.get(dest).set(src, 1);
     }
 
-    /**
-     * 添加带权值边
-     * @param start
-     * @param end
-     * @param weight
-     */
-    public void addEdge(int start, int end, int weight) {
-        matrix[start][end] = weight;
-        matrix[end][start] = weight;
+    public void addEdge(int src, int dest, int weight) {
+        this.adjList.get(src).set(dest, weight);
+        this.adjList.get(dest).set(src, weight);
     }
 
     public void printGraph() {
         for (int i = 0; i < vertices; i++) {
             System.out.print("Vertex " + i + " is connected to: ");
-            for (int j = 0; j < matrix[i].length; j++) {
-                System.out.print(matrix[i][j] + " ");
+            for (int j = 0; j < adjList.get(i).size(); j++) {
+                System.out.print(adjList.get(i).get(j) + " ");
             }
             System.out.println();
         }
     }
 
-    //广度优先搜索
-    public void bfs(int start) {
+    public  void bfs(Integer start) {
         boolean[] visited = new boolean[vertices];
         Queue<Integer> queue = new LinkedList<>();
 
         visited[start] = true;
-        queue.add(start);
+        queue.offer(start);
+
         while (!queue.isEmpty()) {
-            int current = queue.poll();
+            Integer current = queue.poll();
             System.out.print(current + " ");
-            for (int i = 0; i < matrix[current].length; i++) {
-                if (matrix[current][i] == 1 && !visited[i]) {
-                    visited[i] = true;
-                    queue.add(i);
+            for (Integer neighbor : adjList.get(current)) {
+                if (!visited[neighbor]) {
+                    visited[neighbor] = true;
+                    queue.offer(neighbor);
                 }
             }
         }
-
     }
 
     //狄克斯特拉 算法最短路径
-
     public void dijkstra(int start) {
-        // dist[i] 存储从源点到顶点 i 的最短距离
         int[] dist = new int[vertices];
-        // prev[i] 存储最短路径上顶点 i 的前一个顶点，用于路径恢复
         int[] pre = new int[vertices];
-        // 标记顶点是否已确定最短路径
         boolean[] visited = new boolean[vertices];
 
         Arrays.fill(dist, Integer.MAX_VALUE);
         Arrays.fill(pre, -1);
-        dist[start] = 0;
 
-        PriorityQueue<int[]> queue = new PriorityQueue<>(Comparator.comparing(o -> o[0]));
-        queue.add(new int[]{0, start});
+        dist[start] = 0;
+        PriorityQueue<int[]> queue = new PriorityQueue<>(Comparator.comparingInt(o -> o[0]));
+        queue.offer(new int[]{0, start});
+
         while (!queue.isEmpty()) {
-            //获取当前顶点
             int[] current = queue.poll();
             int currentVertex = current[1];
             if (visited[currentVertex]) continue;
             visited[currentVertex] = true;
-
-            for (int i = 0; i < matrix[currentVertex].length; i++) {
-                if (!visited[i] && matrix[currentVertex][i] != 0 && dist[currentVertex] + matrix[currentVertex][i] < dist[i]) {
-                    dist[i] = dist[currentVertex] + matrix[currentVertex][i];
+            int size = adjList.get(currentVertex).size();
+            for (int i = 0; i < size; i++) {
+                //获取当前顶点
+                int neighbor = adjList.get(currentVertex).get(i);
+                if (!visited[i]  && neighbor != 0 && dist[currentVertex] + neighbor < dist[i]) {
+                    dist[i] = dist[currentVertex] + neighbor;
                     pre[i] = currentVertex;
-                    queue.add(new int[]{dist[i], i});
+                    queue.offer(new int[]{dist[i], i});
                 }
             }
         }
         printResult(start, dist, pre);
     }
 
-
-    //打印最短距离
-    private void printResult(int source, int[]  dist, int[] pre) {
+    public void printResult(int source, int[]  dist, int[] pre) {
         System.out.println("最短距离：");
         System.out.println("从源点 " + source + " 出发的最短路径:");
         for (int i = 0; i < dist.length; i++) {
@@ -119,7 +110,7 @@ public class Graph {
         }
     }
 
-    private void printPath(int target, int[] pre) {
+    public void printPath(int target, int[] pre) {
         if (pre[target] == -1) {
             System.out.print(target + " ");
         } else {
@@ -129,25 +120,20 @@ public class Graph {
     }
 
     public static void main(String[] args) {
-//        Graph graph = new Graph(4);
-//        graph.addEdge(0, 1);
+//        ListGraph graph = new ListGraph(4);
 //        graph.addEdge(0, 2);
 //        graph.addEdge(1, 3);
+//
 //        graph.printGraph();
 //        graph.bfs(2);
 
-        //(获取目标最短边)狄克斯特拉 算法
-        //0->1=5,
-        //0->2=4,
-        //1->3=2,
-        //2->3=4,
-        //2->1=1,
-        Graph graph1 = new Graph(4);
+        ListGraph graph1 = new ListGraph(4);
         graph1.addEdge(0, 1, 5);
         graph1.addEdge(0, 2, 4);
         graph1.addEdge(1, 3, 2);
         graph1.addEdge(2, 1, 1);
         graph1.addEdge(2, 3, 4);
+
         graph1.dijkstra(0);
     }
 }
